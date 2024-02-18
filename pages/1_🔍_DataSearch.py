@@ -69,7 +69,7 @@ elif client_type == 'Local':
 def main():
     
     # Define the available user selected options
-    available_models = ['gpt-3.5-turbo-1106', 'gpt-4-1106-preview']
+    available_models = ['gpt-3.5-turbo', 'gpt-4-1106-preview']
     # Define system prompts
 
     # Initialize selected options in session state
@@ -80,58 +80,68 @@ def main():
         st.session_state['class_name'] = None
 
     with st.sidebar:
-        model_choice = st.selectbox(
-            label="Choose an OpenAI model",
-            options=available_models,
-            index= available_models.index(st.session_state["openai_data_model"]),
-        )
-
         st.session_state['class_name'] = st.selectbox(
             label='Repositorio:',
             options=available_classes,
             index=None,
             placeholder='Repositorio'
             )
-        retriever_choice = st.selectbox(
-            label="Choose a retriever", 
-            options=["Keyword", "Vector", "Hybrid"]
+        
+        model_choice = st.selectbox(
+            label="Choose an OpenAI model",
+            options=available_models,
+            index= available_models.index(st.session_state["openai_data_model"]),
+        )
+        
+        with st.expander("Filters"):
+            guest_input = st.selectbox(
+                label='Select Guest',
+                options=guest_list,
+                index=None,
+                placeholder='Select Guest'
             )
-        reranker_enabled = st.checkbox(
-            label="Enable Reranker", 
-            value=True
+
+        with st.expander("Search Parameters"):
+            retriever_choice = st.selectbox(
+            label="Choose a retriever",
+            options=["Hybrid", "Vector", "Keyword"]
             )
-        guest_input = st.selectbox(
-            label='Select Guest', 
-            options=guest_list, 
-            index=None, 
-            placeholder='Select Guest'
+            
+            reranker_enabled = st.checkbox(
+                label="Enable Reranker",
+                value=True
             )
-        alpha_input = st.slider(
-            label='Alpha for Hybrid',
-            min_value=0.00, 
-            max_value=1.00,
-            value=0.40,
-            step=0.05)
-        retrieval_limit = st.slider(
-            label='Reranked Retrieval Results',
-            min_value=10,
-            max_value=300,
-            value=100,
-            step=10
+
+            alpha_input = st.slider(
+                label='Alpha for Hybrid',
+                min_value=0.00,
+                max_value=1.00,
+                value=0.40,
+                step=0.05
             )
-        top_k_limit = st.slider(
-            label='Top K Limit',
-            min_value=1, 
-            max_value=5, 
-            value=3, 
-            step=1
+            
+            retrieval_limit = st.slider(
+                label='Reranked Retrieval Results',
+                min_value=10,
+                max_value=300,
+                value=100,
+                step=10
             )
-        temperature_input = st.slider(
-            label='Temperature of LLM',
-            min_value=0.0,
-            max_value=2.0,
-            value=0.10,
-            step=0.10
+            
+            top_k_limit = st.slider(
+                label='Top K Limit',
+                min_value=1, 
+                max_value=5, 
+                value=3, 
+                step=1
+            )
+            
+            temperature_input = st.slider(
+                label='Temperature of LLM',
+                min_value=0.0,
+                max_value=2.0,
+                value=0.10,
+                step=0.10
             )
     # Check if the collection name has been selected
     class_name = st.session_state['class_name']
